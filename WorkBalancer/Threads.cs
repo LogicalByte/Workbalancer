@@ -1,32 +1,32 @@
 ﻿using System;
 using System.Threading;
-using System.Runtime.InteropServices;
 
 namespace WorkBalancer
 {
     class Threads
     {
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-
-        private delegate int Add([param: MarshalAs(UnmanagedType.I4)] int Zahl1, [param: MarshalAs(UnmanagedType.I4)] int Zahl2);
-
         public Thread Thread { get; set; }
         public bool IsWorking { get; set; }
         public int OrderID { get; set; }
         public int Ergebnis { get; set; }
-        public IntPtr PToMethod { get; set; }
 
-        public int DoExecute(Datensaetze bDatensatz, IntPtr PToMethod)
+
+        /// <summary>
+        /// Summiert zwei Zahlen.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <remarks>
+        /// Die Berechnung wartet zufällig zwischen 300 und 5000ms, bis das Ergebnis
+        /// zurückgegeben wird. Dadurch wird die Arbeit des Workbalancers hervorgehoben.
+        /// Einen anderen Zweck erfüllt die Verzögerung nicht.
+        /// </remarks>
+        public void Add(int a, int b)
         {
-            // Aufrufen der Sprungadresse der Methode in der DLL
-            Add Add = (Add)Marshal.GetDelegateForFunctionPointer(PToMethod, typeof(Add));
+            Random rnd = new Random();
 
-            // Aufruf der DLL-Methode
-            int Ergebnis = Add(bDatensatz.Zahl1, bDatensatz.Zahl2);
-
-            return Ergebnis;
+            Thread.Sleep(rnd.Next(300, 5001));
+            Ergebnis = a + b;
         }
-    }
-
-   
+    }  
 }
